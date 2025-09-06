@@ -7,8 +7,14 @@ tzdata==2024.2
 # Django REST Framework for API endpoints
 djangorestframework==3.15.2
 
+# Token authentication is included with DRF
+# No additional package needed for rest_framework.authtoken
+
 # Django Filter for advanced filtering in API
 django-filter==25.1
+
+# CORS headers for API access
+django-cors-headers==4.7.0
 
 # Image processing (for file uploads and attachments)
 Pillow==9.4.0

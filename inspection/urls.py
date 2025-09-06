@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 from .api_views import api_root
+from .auth_views import api_login, api_logout, api_user_info
 
 # Create a router and register our viewsets with it
 router = DefaultRouter()
@@ -17,4 +18,8 @@ router.register(r'report-attachments', views.ReportAttachmentsViewSet, basename=
 urlpatterns = [
     path('api/', api_root, name='api-root'),
     path('api/', include(router.urls)),
+    # Custom authentication endpoints
+    path('api/auth/login/', api_login, name='api-login'),
+    path('api/auth/logout/', api_logout, name='api-logout'),
+    path('api/auth/user/', api_user_info, name='api-user-info'),
 ]
