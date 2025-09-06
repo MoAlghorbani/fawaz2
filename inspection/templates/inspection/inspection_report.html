@@ -1,173 +1,136 @@
 {% load inspection_extras %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Equipment Inspection Report - {{ report.report_number }}</title>
+    <title>استمارة الفحص اليومي للمعدات - {{ report.report_number }}</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+        
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-family: 'Amiri', 'Times New Roman', serif;
+            font-size: 14px;
             line-height: 1.4;
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 15px;
+            color: #000;
+            direction: rtl;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #000;
+            padding: 10px;
         }
         
         .header h1 {
-            margin: 0 0 10px 0;
-            font-size: 24px;
-            color: #2c3e50;
-        }
-        
-        .header h2 {
             margin: 0;
-            font-size: 16px;
-            color: #7f8c8d;
-            font-weight: normal;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
         }
         
-        .report-info {
-            display: table;
+        .info-table {
             width: 100%;
-            margin-bottom: 25px;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 12px;
         }
         
-        .info-section {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-            padding-right: 20px;
-        }
-        
-        .info-section:last-child {
-            padding-right: 0;
-        }
-        
-        .info-row {
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
+        .info-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            vertical-align: middle;
         }
         
         .info-label {
+            background-color: #f0f0f0;
             font-weight: bold;
-            min-width: 120px;
-            color: #2c3e50;
+            text-align: center;
+            width: 120px;
         }
         
         .info-value {
-            flex: 1;
-            border-bottom: 1px dotted #bdc3c7;
-            padding-bottom: 2px;
+            text-align: right;
+            padding-right: 10px;
         }
         
         .inspection-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 25px 0;
+            margin: 15px 0;
             font-size: 11px;
         }
         
         .inspection-table th,
         .inspection-table td {
-            border: 1px solid #333;
-            padding: 8px 4px;
+            border: 1px solid #000;
+            padding: 6px 4px;
             text-align: center;
             vertical-align: middle;
         }
         
         .inspection-table th {
-            background-color: #34495e;
-            color: white;
+            background-color: #f0f0f0;
             font-weight: bold;
         }
         
         .item-description {
-            text-align: left;
-            min-width: 200px;
-            max-width: 250px;
-            word-wrap: break-word;
+            text-align: right;
+            padding-right: 8px;
+            width: 280px;
+            font-size: 10px;
         }
         
-        .date-header {
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            white-space: nowrap;
-            min-width: 35px;
+        .day-header {
+            font-weight: bold;
+            width: 70px;
             font-size: 10px;
         }
         
         .status-cell {
+            width: 70px;
+            height: 25px;
+        }
+        
+        .row-number {
             font-weight: bold;
-            font-size: 16px;
+            width: 30px;
+            background-color: #f0f0f0;
         }
         
-        .status-ok {
-            color: #27ae60;
+        .notes-section {
+            margin-top: 20px;
         }
         
-        .status-not-ok {
-            color: #e74c3c;
-        }
-        
-        .status-na {
-            color: #95a5a6;
-        }
-        
-        .notes-section,
-        .attachments-section {
-            margin-top: 30px;
-            page-break-inside: avoid;
-        }
-        
-        .section-title {
-            font-size: 16px;
+        .notes-title {
             font-weight: bold;
-            color: #2c3e50;
-            border-bottom: 1px solid #bdc3c7;
-            padding-bottom: 5px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        
+        .notes-lines {
+            border-top: 1px solid #000;
             margin-bottom: 15px;
         }
         
-        .note-item,
-        .attachment-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-left: 4px solid #3498db;
+        .notes-line {
+            border-bottom: 1px dotted #000;
+            height: 25px;
+            margin: 5px 0;
+            display: flex;
+            align-items: flex-end;
         }
         
-        .note-text {
-            margin-bottom: 5px;
-        }
-        
-        .note-meta,
-        .attachment-meta {
+        .line-number {
+            margin-left: 10px;
             font-size: 10px;
-            color: #7f8c8d;
-            font-style: italic;
-        }
-        
-        .footer {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 10px;
-            color: #7f8c8d;
-            border-top: 1px solid #bdc3c7;
-            padding-top: 15px;
         }
         
         .signatures {
-            margin-top: 40px;
+            margin-top: 30px;
             display: table;
             width: 100%;
         }
@@ -176,27 +139,23 @@
             display: table-cell;
             width: 50%;
             text-align: center;
-            padding: 0 20px;
+            padding: 10px;
         }
         
         .signature-line {
-            border-bottom: 1px solid #333;
-            height: 50px;
-            margin-bottom: 10px;
+            border-bottom: 1px solid #000;
+            height: 40px;
+            margin-bottom: 8px;
         }
         
         .signature-label {
             font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .page-break {
-            page-break-before: always;
+            font-size: 12px;
         }
         
         @media print {
             body {
-                padding: 10px;
+                padding: 8px;
             }
         }
     </style>
@@ -204,157 +163,128 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>Daily Equipment Inspection Report</h1>
-        <h2>نموذج فحص المعدات اليومي</h2>
+        <h1>استمارة الفحص اليومي للمعدات</h1>
     </div>
     
     <!-- Report Information -->
-    <div class="report-info">
-        <div class="info-section">
-            <div class="info-row">
-                <span class="info-label">Report No. / الرقم:</span>
-                <span class="info-value">{{ report.report_number }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Equipment / المعدة:</span>
-                <span class="info-value">{{ report.equipment.equipment_type }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Serial No. / الرقم المسلسل:</span>
-                <span class="info-value">{{ report.equipment.serial_number }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Model / الموديل:</span>
-                <span class="info-value">{{ report.equipment.model }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Operator / المشغل:</span>
-                <span class="info-value">{{ report.operator.full_name }}</span>
-            </div>
-        </div>
-        
-        <div class="info-section">
-            <div class="info-row">
-                <span class="info-label">From Date / من تاريخ:</span>
-                <span class="info-value">{{ report.start_date|date:"d/m/Y" }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">To Date / إلى تاريخ:</span>
-                <span class="info-value">{{ report.end_date|date:"d/m/Y" }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Work Hours / ساعات العمل:</span>
-                <span class="info-value">{{ report.working_hours_from|time:"H:i" }} - {{ report.working_hours_to|time:"H:i" }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Supervisor / المشرف:</span>
-                <span class="info-value">{{ report.supervisor.full_name }}</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Generated / تاريخ الإنشاء:</span>
-                <span class="info-value">{{ generated_at|date:"d/m/Y H:i" }}</span>
-            </div>
-        </div>
-    </div>
+    <table class="info-table">
+        <tr>
+            <td class="info-label">نوع المعدة</td>
+            <td class="info-value">{{ report.equipment.equipment_type }}</td>
+            <td class="info-label">الرقم التسلسلي</td>
+            <td class="info-value">{{ report.equipment.serial_number }}</td>
+            <td class="info-label">سائق المعدة</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: center; border-bottom: 1px dotted #000;">من تاريخ ........................ الى تاريخ ........................</td>
+            <td style="border-left: 1px solid #000;"></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: center; border-bottom: 1px dotted #000;">ساعات العمل من ............. ساعة الى ............. ساعة</td>
+            <td style="border-left: 1px solid #000;"></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: center;">ملاحظة : ( ✓ ) غير جيدة . ( / ) جيدة</td>
+            <td style="border-left: 1px solid #000;"></td>
+        </tr>
+    </table>
     
     <!-- Inspection Table -->
     <table class="inspection-table">
         <thead>
             <tr>
-                <th rowspan="2" class="item-description">Inspection Items<br/>بنود الفحص</th>
-                <th colspan="{{ dates|length }}">Inspection Dates / تواريخ الفحص</th>
-            </tr>
-            <tr>
-                {% for date in dates %}
-                <th class="date-header">
-                    {{ date|date:"D" }}<br/>
-                    {{ date|date:"d/m" }}
-                </th>
-                {% endfor %}
+                <th class="row-number">م</th>
+                <th class="item-description">البيــــــــان</th>
+                <th class="day-header">السبت</th>
+                <th class="day-header">الأحد</th>
+                <th class="day-header">الاثنين</th>
+                <th class="day-header">الثلاثاء</th>
+                <th class="day-header">الأربعاء</th>
+                <th class="day-header">الخميس</th>
+                <th class="day-header">الجمعة</th>
             </tr>
         </thead>
         <tbody>
             {% for item in checklist_items %}
             <tr>
+                <td class="row-number">{{ forloop.counter }}</td>
                 <td class="item-description">{{ item.item_description }}</td>
                 {% for date in dates %}
-                <td class="status-cell">
-                    {% with status=inspection_matrix|lookup:item.item_id|lookup:date %}
-                        {% if status == 'ok' %}
-                            <span class="status-ok">✓</span>
-                        {% elif status == 'not_ok' %}
-                            <span class="status-not-ok">✗</span>
-                        {% elif status == 'na' %}
-                            <span class="status-na">N/A</span>
-                        {% else %}
-                            <span class="status-na">-</span>
-                        {% endif %}
-                    {% endwith %}
-                </td>
+                    {% if forloop.counter0 < 7 %}
+                    <td class="status-cell">
+                        {% with status=inspection_matrix|lookup:item.item_id|lookup:date %}
+                            {% if status == 'good' %}
+                                /
+                            {% elif status == 'not_good' %}
+                                ✓
+                            {% else %}
+                                
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    {% endif %}
+                {% endfor %}
+                <!-- Fill remaining cells if less than 7 days -->
+                {% for i in "1234567"|make_list %}
+                    {% if forloop.counter0 >= dates|length %}
+                    <td class="status-cell"></td>
+                    {% endif %}
                 {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
     
-    <!-- Legend -->
-    <div style="margin: 20px 0; text-align: center; font-size: 11px;">
-        <strong>Legend / المفتاح:</strong>
-        <span class="status-ok" style="margin: 0 15px;">✓ = OK / سليم</span>
-        <span class="status-not-ok" style="margin: 0 15px;">✗ = Not OK / غير سليم</span>
-        <span class="status-na" style="margin: 0 15px;">N/A = Not Applicable / غير قابل للتطبيق</span>
-        <span class="status-na" style="margin: 0 15px;">- = Not Checked / لم يتم الفحص</span>
-    </div>
+
     
     <!-- Notes Section -->
-    {% if notes %}
     <div class="notes-section">
-        <div class="section-title">Notes / الملاحظات</div>
-        {% for note in notes %}
-        <div class="note-item">
-            <div class="note-text">{{ note.note_text }}</div>
-            <div class="note-meta">{{ note.created_at|date:"d/m/Y H:i" }}</div>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    
-    <!-- Attachments Section -->
-    {% if attachments %}
-    <div class="attachments-section">
-        <div class="section-title">Attachments / المرفقات</div>
-        {% for attachment in attachments %}
-        <div class="attachment-item">
-            <div class="note-text">
-                <strong>File:</strong> {{ attachment.file_path|basename }}
-                {% if attachment.caption %}
-                <br/><strong>Caption:</strong> {{ attachment.caption }}
-                {% endif %}
+        <div class="notes-title">الملاحظات أن وجدت:</div>
+        <div class="notes-lines">
+            <div class="notes-line">
+                <span class="line-number">1 ........................................................................................................................................................................................................................................</span>
             </div>
-            <div class="attachment-meta">Uploaded: {{ attachment.uploaded_at|date:"d/m/Y H:i" }}</div>
+            <div class="notes-line">
+                <span class="line-number">2 ........................................................................................................................................................................................................................................</span>
+            </div>
+            <div class="notes-line">
+                <span class="line-number">3 ........................................................................................................................................................................................................................................</span>
+            </div>
+            <div class="notes-line">
+                <span class="line-number">4 ........................................................................................................................................................................................................................................</span>
+            </div>
+            <div class="notes-line">
+                <span class="line-number">5 ........................................................................................................................................................................................................................................</span>
+            </div>
+            <div class="notes-line">
+                <span class="line-number">6 ........................................................................................................................................................................................................................................</span>
+            </div>
         </div>
-        {% endfor %}
+        
+        {% if notes %}
+        <div style="margin-top: 10px; font-size: 10px;">
+            <strong>الملاحظات المسجلة:</strong>
+            {% for note in notes %}
+            <div style="margin: 5px 0;">{{ forloop.counter }}. {{ note.note_text }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
+    
+
     
     <!-- Signatures -->
     <div class="signatures">
         <div class="signature-section">
             <div class="signature-line"></div>
-            <div class="signature-label">Operator Signature<br/>توقيع المشغل</div>
-            <div style="margin-top: 10px; font-size: 10px;">{{ report.operator.full_name }}</div>
+            <div class="signature-label">توقيع السائق</div>
         </div>
         <div class="signature-section">
             <div class="signature-line"></div>
-            <div class="signature-label">Supervisor Signature<br/>توقيع المشرف</div>
-            <div style="margin-top: 10px; font-size: 10px;">{{ report.supervisor.full_name }}</div>
+            <div class="signature-label">توقيع المهندس المشرف</div>
         </div>
     </div>
     
-    <!-- Footer -->
-    <div class="footer">
-        <p>Daily Equipment Inspection System | نظام فحص المعدات اليومي</p>
-        <p>Generated on {{ generated_at|date:"d/m/Y H:i" }} | تم الإنشاء في {{ generated_at|date:"d/m/Y H:i" }}</p>
-    </div>
+
 </body>
 </html>
