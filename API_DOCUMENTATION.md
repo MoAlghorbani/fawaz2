@@ -838,3 +838,157 @@ curl -X GET "http://127.0.0.1:8000/api/inspection-reports/?search=EQ-001"
 - Foreign key relationships require valid IDs from related models
 - Bulk operations are available for daily inspection data to improve performance
 - All endpoints support standard REST conventions with appropriate HTTP methods
+
+## PDF Report Generation
+
+### Generate PDF Report
+
+#### **GET** `/api/reports/{report_id}/pdf/`
+
+Generate a PDF document for an inspection report with formatted layout including:
+- Report header with bilingual information (English/Arabic)
+- Equipment and personnel details
+- Inspection matrix showing daily status for each checklist item
+- Notes and attachments sections
+- Signature areas for operator and supervisor
+
+**Authorization Required:** Yes (Token authentication)
+
+#### Path Parameters:
+- `report_id` (integer, required) - ID of the inspection report
+
+#### Response:
+- **Content-Type:** `application/pdf`
+- **Status:** 200 OK - PDF file download
+- **Status:** 404 Not Found - Report doesn't exist
+- **Status:** 500 Internal Server Error - PDF generation failed
+
+#### Usage Example:
+```bash
+curl -X GET "http://127.0.0.1:8000/api/reports/1/pdf/" \
+     -H "Authorization: Token your-token-here" \
+     --output inspection_report_1.pdf
+```
+
+### Get PDF Report Data
+
+#### **GET** `/api/reports/{report_id}/pdf-data/`
+
+Retrieve structured data that would be used for PDF generation. Useful for previewing report content or building custom PDF templates.
+
+**Authorization Required:** Yes (Token authentication)
+
+#### Path Parameters:
+- `report_id` (integer, required) - ID of the inspection report
+
+#### Response Example:
+```json
+{
+  "report": {
+    "report_id": 1,
+    "report_number": "RPT-001",
+    "equipment": {
+      "id": 1,
+      "serial_number": "EQ-001",
+      "type": "Excavator",
+      "model": "CAT 320"
+    },
+    "operator": {
+      "id": 1,
+      "name": "Ahmed Hassan",
+      "employee_number": "EMP001"
+    },
+    "supervisor": {
+      "id": 2,
+      "name": "Mohamed Ali",
+      "employee_number": "EMP002"
+    },
+    "start_date": "2025-09-02",
+    "end_date": "2025-09-08",
+    "working_hours_from": "08:00:00",
+    "working_hours_to": "17:00:00",
+    "created_at": "2025-09-06T20:40:04.123456Z"
+  },
+  "dates": ["2025-09-02", "2025-09-03", "2025-09-04", "2025-09-05", "2025-09-06", "2025-09-07", "2025-09-08"],
+  "inspection_matrix": [
+    {
+      "item_id": 1,
+      "description": "Engine oil level",
+      "sort_order": 1,
+      "daily_status": {
+        "2025-09-02": "ok",
+        "2025-09-03": "ok",
+        "2025-09-04": "not_ok",
+        "2025-09-05": null,
+        "2025-09-06": "ok",
+        "2025-09-07": "ok",
+        "2025-09-08": "ok"
+      }
+    }
+  ],
+  "notes": [
+    {
+      "note_text": "Engine oil was low on 2025-09-04, refilled during maintenance",
+      "created_at": "2025-09-04T10:30:00Z"
+    }
+  ],
+  "attachments": [
+    {
+      "file_path": "/media/inspection_attachments/2025/09/04/engine_oil_check.jpg",
+      "caption": "Engine oil level after refill",
+      "uploaded_at": "2025-09-04T11:00:00Z"
+    }
+  ],
+  "summary": {
+    "total_checklist_items": 15,
+    "total_inspection_days": 7,
+    "total_notes": 1,
+    "total_attachments": 1
+  }
+}
+```
+
+#### Usage Example:
+```bash
+curl -X GET "http://127.0.0.1:8000/api/reports/1/pdf-data/" \
+     -H "Authorization: Token your-token-here" \
+     -H "Content-Type: application/json"
+```
+
+### Direct PDF View (Alternative)
+
+#### **GET** `/reports/{report_id}/pdf/`
+
+Direct PDF view endpoint that can be accessed via web browser. This endpoint provides the same PDF generation but is designed for direct browser access rather than API consumption.
+
+**Authorization Required:** Yes (Session or Token authentication)
+
+#### Usage:
+```html
+<!-- Direct browser access -->
+<a href="http://127.0.0.1:8000/reports/1/pdf/" target="_blank">View PDF Report</a>
+
+<!-- Or embed in iframe -->
+<iframe src="http://127.0.0.1:8000/reports/1/pdf/" width="100%" height="600px"></iframe>
+```
+
+### PDF Features:
+
+1. **Bilingual Support:** Headers and labels in both English and Arabic
+2. **Professional Layout:** Clean, printable format with proper spacing and styling
+3. **Inspection Matrix:** Grid showing daily status for each checklist item with visual indicators:
+   - ✓ (Green) = OK / سليم
+   - ✗ (Red) = Not OK / غير سليم
+   - N/A (Gray) = Not Applicable / غير قابل للتطبيق
+   - - (Gray) = Not Checked / لم يتم الفحص
+4. **Complete Information:** Equipment details, personnel info, work hours, dates
+5. **Notes and Attachments:** All related notes and attachment listings
+6. **Signature Areas:** Designated spaces for operator and supervisor signatures
+7. **Responsive Design:** Optimized for A4 paper size with proper margins
+
+### PDF Requirements:
+
+- **wkhtmltopdf** must be installed on the server
+- Appropriate file permissions for PDF generation
+- Sufficient disk space for temporary PDF files
+- Network access for any external resources (if used in templates)

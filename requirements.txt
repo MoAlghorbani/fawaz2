@@ -16,6 +16,12 @@ django-filter==25.1
 # CORS headers for API access
 django-cors-headers==4.7.0
 
+# Swagger/OpenAPI documentation
+drf-spectacular==0.27.2
+
+# PDF generation
+django-wkhtmltopdf==3.4.0
+
 # Image processing (for file uploads and attachments)
 Pillow==9.4.0
 
