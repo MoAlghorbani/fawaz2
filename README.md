@@ -2,6 +2,78 @@
 
 This Django application implements a comprehensive database schema for a Daily Equipment Inspection System, designed to digitize equipment inspection forms.
 
+## Requirements
+
+- Python 3.8+
+- Django 5.2+
+- Django REST Framework 3.15+
+- Other dependencies listed in requirements.txt
+
+## Installation
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd fawaz2
+```
+
+### 2. Create Virtual Environment
+```bash
+python -m venv venv
+
+# On Windows
+venv\Scripts\activate
+
+# On macOS/Linux
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+```bash
+# Install production dependencies
+pip install -r requirements.txt
+
+# Or for development (includes testing and code quality tools)
+pip install -r requirements-dev.txt
+```
+
+### 4. Database Setup
+```bash
+# Run migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Load initial checklist items
+python manage.py load_checklist_items
+
+# Create superuser for admin access
+python manage.py createsuperuser
+```
+
+### 5. Start Development Server
+```bash
+python manage.py runserver
+```
+
+### 6. Access the Application
+- **Admin Interface**: http://127.0.0.1:8000/admin/
+- **API Root**: http://127.0.0.1:8000/api/
+- **API Authentication**: http://127.0.0.1:8000/api-auth/
+
+## Package Dependencies
+
+### Core Dependencies
+- **Django 5.2**: Web framework
+- **Django REST Framework 3.15.2**: API framework
+- **django-filter 25.1**: Advanced filtering for APIs
+- **Pillow 9.4.0**: Image processing for file uploads
+
+### Development Dependencies (requirements-dev.txt)
+- **pytest-django**: Testing framework
+- **django-debug-toolbar**: Debug tools
+- **black/flake8/isort**: Code formatting and linting
+- **coverage**: Test coverage reporting
+
 ## Models Overview
 
 ### 1. Equipment

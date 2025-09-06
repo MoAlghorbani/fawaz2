@@ -1,0 +1,42 @@
+# Core Django packages
+Django==5.2
+asgiref==3.8.1
+sqlparse==0.5.3
+tzdata==2024.2
+
+# Django REST Framework for API endpoints
+djangorestframework==3.15.2
+
+# Django Filter for advanced filtering in API
+django-filter==25.1
+
+# Image processing (for file uploads and attachments)
+Pillow==9.4.0
+
+# Date and time utilities
+python-dateutil==2.8.2
+pytz==2024.2
+
+# HTTP requests (useful for testing APIs)
+requests==2.31.0
+urllib3==1.26.5
+
+# Additional utilities
+six==1.17.0
+typing_extensions==4.12.2
+
+# Optional: Database drivers (uncomment as needed)
+# PostgreSQL
+# psycopg2==2.9.5
+
+# MySQL
+# mysqlclient==2.1.1
+
+# Development and testing tools (optional)
+# django-debug-toolbar==4.2.0
+# pytest-django==4.5.2
+# coverage==7.2.0
+
+# Production server (optional)
+# gunicorn==21.2.0
+# whitenoise==6.5.0
